@@ -1,0 +1,133 @@
+# this is the root setting of all setting and will be loaded in first place
+# the loading sequence is root_setting -> specific setting
+# -> manully overided setting -> computed setting  in finalize_config() 
+# which means access config before finalize can be dangerous
+# always remember to add a space after ":"
+
+id: i3d_ori_all_alter20
+setting_name: base
+data_mode: image
+# for better compatiable with philly and potential running enviroment
+# all path under path should be rel_path w.r.t the config.py
+# and the abspath will be compute when finalize
+
+# python -m torch.distributed.launch  --nproc_per_node=2 main.py  --setting naive_raw.yaml
+# --config trainer.default.log_step=1 trainer.default.sample_step=20
+strategies: ["scale_mean","scale_0","scale_1","scale_2","scale_3"]
+mask_direct: true
+
+use_checkpoint: False
+clip_size: 32
+videos: -1
+reg_weight: 1
+class_weight: 1
+final_weight: 1
+model:
+  inco:
+    spatial_count: 0
+    SOLVER: 
+      BASE_LR: 0.05
+      LR_POLICY: cosine_uformer
+      MAX_EPOCH: 1000
+      MOMENTUM: 0.9
+      WEIGHT_DECAY: 0.0001
+      WARMUP_EPOCHS: 10
+      WARMUP_START_LR: 0.005
+      OPTIMIZING_METHOD: sgd
+      STEP_SIZE: 40
+      GAMMA: 0.5
+      DAMPENING: 0.0
+      NESTEROV: False
+      ALTER_FREQ: 20
+      # BATCH_SIZE: 32
+  transformer:
+    patch_type: time
+    stop_point: 5
+    depth: 1
+BN:
+  seperate_w: true
+  WEIGHT_DECAY: 0.0
+path:
+ model_dir: ../checkpoint
+ pretrain_dir: ../pretrain
+ log_dir: /data1/wangzd/DeepfakeDetection_logs/FTCN/
+ data_dir: /data1/wangzd/datasets/FaceForensics/
+ split_path: /data1/wangzd/DeepfakeDetection/FTCN/data/datasets/Forensics/splits/
+ precomputed_dir: null
+
+trainer_type: YL3DIncoPolicyS
+dataset_type: YL_3D_INCO_BASE_ZIP_PNG_S
+classifier_type: i3d_ori
+
+imsize: 224
+base_count: 50
+aug_in_train: true
+test_on_train: true
+
+next_frame_rate: 0.0
+aug:
+ min_size: 64
+ max_size: 317
+ min_quality: 60
+ max_quality: 100
+ need_img_degrade: false
+ need_mask_distortion: true
+ need_color_match: true
+ max_step: 4
+ compression: false
+ cutout: 0
+ earse: true
+ earse_post: true
+ erase_image: false
+ aug_prob: 0
+ types: ["C23_NOISE"]
+ earse_type: ["strong_black"]
+ jitter_prob: 0
+ color_jitter_prob: 0.8
+ color_jitter_bri_con_sat: 0.4
+ gauss_blur_prob: 0.05
+ gauss_noise_prob: 0.1
+ strong_aug_in_train: false
+dataset:
+ real_train:
+  original_c23: 1
+ fake_train:
+  NeuralTextures_c23: 1
+  Face2Face_c23: 1
+  FaceSwap_c23: 1
+  Deepfakes_c23: 1
+ aug_online:
+  empty: 1
+ tests:
+  NeuralTextures_c23: ["NeuralTextures_c23"]
+  Face2Face_c23: ["Face2Face_c23"]
+  FaceSwap_c23: ["FaceSwap_c23"]
+  Deepfakes_c23: ["Deepfakes_c23"]
+  
+max_to_keep: 100
+
+data_source: lmdb
+
+trainer:
+ default:
+  apex_option: O1
+  batch_size: 16 ### 2卡ddp相当于bs16
+  accumulation_steps: 1
+  test_batch_size: 16
+  model_save_step: 2000
+  log_step: 200
+  sample_step: 1000
+  init_lr: 3e-4
+  total_epoch: 1000
+  one_test_step: 200
+  detach_step: 5000
+  validation_step: 2000
+  freeze_backbone_step: 0
+  total_step: 200000
+  lr_step: 100000
+
+
+
+#classifier:
+# default:
+#  pretrained: false
