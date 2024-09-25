@@ -18,7 +18,7 @@ pip install torch==1.8.0+cu111 torchvision==0.9.0+cu111 -f https://download.pyto
 pip install -r requirements.txt
 ```
 ## Inference
-You can download weights from [here](https://mailustceducn-my.sharepoint.com/:u:/g/personal/zhendongwang_mail_ustc_edu_cn/ESTl_yCTDHJPq3DYNBKOpOwBG5XAjMh66M0sxXdQwFN9tw?e=L7UQ3a) and put it into `checkpoints`. Then run:
+You can download weights from [RecDrive](https://rec.ustc.edu.cn/share/e87360b0-7b2e-11ef-aeef-a9fd0832d537)[password：altf] or [BaiduDrive](https://pan.baidu.com/s/1lH4R1NlHoW_16Xv_ArQhvw)[password：altf], and put it into `checkpoints`. Then run:
 ```python
 python demo.py
 ```
